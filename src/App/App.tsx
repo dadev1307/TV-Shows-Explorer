@@ -1,82 +1,71 @@
 import styles from './App.module.css';
-import { PromptLine } from './components/index.ts';
-import { CrtOverlay } from './CrtOverlay/CrtOverlay.tsx';
-import { Footer } from './Footer/Footer.tsx';
 import { GenreFilter } from './GenreFilter/GenreFilter.tsx';
-import { Hero } from './Hero/Hero.tsx';
-import { Neofetch } from './Neofetch/Neofetch.tsx';
 import { Pagination } from './Pagination/Pagination.tsx';
 import { SearchBar } from './SearchBar/SearchBar.tsx';
 import { ShowList } from './ShowList/ShowList.tsx';
-import { TerminalWindow } from './TerminalWindow/TerminalWindow.tsx';
 import { usePresenter } from './usePresenter.ts';
 
 function App() {
   const {
-    terminal,
     searchBar,
     genreFilter,
     showList,
     pagination,
     error,
-    neofetch,
-    resultsComment,
+    stats,
     hasSearched,
     isEmpty,
   } = usePresenter();
 
   return (
     <div className={styles.app}>
-      <CrtOverlay />
-      <TerminalWindow {...terminal}>
-        <Hero />
+      <header className={styles.header}>
+        <h1 className={styles.heading}>TV Shows Explorer</h1>
+        <p className={styles.subtitle}>
+          Поиск сериалов через TVmaze — введите запрос, отфильтруйте по жанру и
+          листайте страницы.
+        </p>
+      </header>
 
-        <hr className={styles.rule} />
+      <SearchBar {...searchBar} />
 
-        <SearchBar {...searchBar} />
+      {error.message ? (
+        <div className={styles.status} role="alert">
+          <p className={styles.errorText}>{error.message}</p>
+          <button
+            type="button"
+            className={styles.retryButton}
+            onClick={error.onRetry}
+          >
+            Повторить
+          </button>
+        </div>
+      ) : null}
 
-        {hasSearched ? <Neofetch {...neofetch} /> : null}
+      {hasSearched && !error.message ? (
+        <p className={styles.stats}>
+          Показано {stats.filteredCount} из {stats.totalCount} найденных
+        </p>
+      ) : null}
 
-        <GenreFilter {...genreFilter} />
+      <GenreFilter {...genreFilter} />
 
-        <section id="results" className={styles.results}>
-          <PromptLine command="ls -la ~/shows" comment={resultsComment} />
+      {isEmpty ? (
+        <p className={styles.empty}>По вашему запросу ничего не найдено.</p>
+      ) : null}
 
-          {error.message ? (
-            <div className={styles.status} role="alert">
-              <p className={styles.errorText}>error: {error.message}</p>
-              <button
-                type="button"
-                className={styles.retryButton}
-                onClick={error.onRetry}
-              >
-                $ retry
-              </button>
-            </div>
-          ) : null}
+      {!isEmpty && showList.shows.length > 0 ? (
+        <>
+          <ShowList {...showList} />
+          <Pagination {...pagination} />
+        </>
+      ) : null}
 
-          {isEmpty ? (
-            <p className={styles.empty}>
-              ls: по вашему запросу ничего не найдено
-            </p>
-          ) : null}
-
-          {!isEmpty && showList.shows.length > 0 ? (
-            <>
-              <ShowList {...showList} />
-              <Pagination {...pagination} />
-            </>
-          ) : null}
-
-          {!hasSearched ? (
-            <p className={styles.hint}>
-              total 0 — начните с поискового запроса, список пока пуст.
-            </p>
-          ) : null}
-        </section>
-
-        <Footer />
-      </TerminalWindow>
+      {!hasSearched ? (
+        <p className={styles.hint}>
+          Начните с поискового запроса — список пока пуст.
+        </p>
+      ) : null}
     </div>
   );
 }

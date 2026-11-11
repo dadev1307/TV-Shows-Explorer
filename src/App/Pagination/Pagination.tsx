@@ -1,7 +1,11 @@
 import type { PaginationProps } from './types.ts';
 import styles from './Pagination.module.css';
 
-export const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
+export const Pagination = ({
+  page,
+  totalPages,
+  onPageChange,
+}: PaginationProps) => {
   if (totalPages <= 1) {
     return null;
   }
@@ -18,7 +22,7 @@ export const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) 
           onPageChange(page - 1);
         }}
       >
-        &lt; Назад
+        Назад
       </button>
       <ol className={styles.pages}>
         {pages.map((pageNumber) => (
@@ -45,7 +49,7 @@ export const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) 
           onPageChange(page + 1);
         }}
       >
-        Вперёд &gt;
+        Вперёд
       </button>
     </nav>
   );

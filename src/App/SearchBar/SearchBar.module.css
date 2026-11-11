@@ -1,21 +1,16 @@
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
   width: 100%;
   text-align: left;
-  scroll-margin-top: 1rem;
 }
 
 .label {
   display: block;
+  margin-bottom: 0.75rem;
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-  text-transform: uppercase;
-  text-shadow: var(--glow-soft);
+  letter-spacing: -0.01em;
+  color: var(--text-h);
 }
 
 .field {
@@ -24,50 +19,37 @@
   align-items: center;
 }
 
-.prompt {
-  position: absolute;
-  left: 1.25rem;
-  font-weight: 700;
-  color: var(--accent);
-  text-shadow: var(--glow-soft);
-  pointer-events: none;
-}
-
 .input {
   width: 100%;
-  min-height: 52px;
-  padding: 0.85rem 3.25rem 0.85rem 2.75rem;
+  min-height: 56px;
+  padding: 0.85rem 3.25rem 0.85rem 1.5rem;
   font: inherit;
   color: var(--text-h);
-  caret-color: var(--accent);
   background: var(--bg);
-  border: 1px solid var(--line-strong);
+  border: none;
   border-radius: var(--radius-base);
   outline: none;
-  box-shadow: var(--box-glow);
+  box-shadow: var(--shadow-inset);
   box-sizing: border-box;
-  transition:
-    border-color var(--transition),
-    box-shadow var(--transition);
+  transition: box-shadow var(--transition);
 }
 
 .input:focus-visible {
-  border-color: var(--accent);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 0 24px rgba(57, 255, 122, 0.25);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-inset-deep);
 }
 
 .input::placeholder {
-  color: var(--accent-faint);
+  color: var(--placeholder);
 }
 
 .spinner {
   position: absolute;
   right: 1.25rem;
-  width: 1.1rem;
-  height: 1.1rem;
-  border: 2px solid var(--line-strong);
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgb(163 177 198 / 0.6);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -76,11 +58,5 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation-duration: 2s;
   }
 }

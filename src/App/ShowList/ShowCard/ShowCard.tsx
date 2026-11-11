@@ -1,82 +1,68 @@
 import type { ShowCardProps } from './types.ts';
-import { usePresenter } from './usePresenter.ts';
 import styles from './ShowCard.module.css';
 
+const stripHtml = (html: string | null): string => {
+  if (!html) {
+    return 'Описание отсутствует';
+  }
+  return html.replaceAll(/<[^>]*>/g, '').trim();
+};
+
 export const ShowCard = ({ show }: ShowCardProps) => {
-  const { summary, posterUrl, ratingLabel, ratingMeter, premieredYear } =
-    usePresenter(show);
+  const rating = show.rating.average;
+  const summary = stripHtml(show.summary);
+  const posterUrl = show.image?.medium;
 
   return (
     <article className={styles.card}>
-      <div className={styles.head}>
+      <a
+        className={styles.posterLink}
+        href={show.url}
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        {posterUrl ? (
+          <img
+            className={styles.poster}
+            src={posterUrl}
+            alt={`Постер ${show.name}`}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div className={styles.posterPlaceholder} aria-hidden>
+            TV
+          </div>
+        )}
+      </a>
+      <div className={styles.body}>
         <h2 className={styles.title}>
           <a href={show.url} target="_blank" rel="noreferrer noopener">
             {show.name}
-            <span className={styles.slash}>/</span>
           </a>
         </h2>
-        <div className={styles.headMeta}>
-          <span className={styles.rating}>★ {ratingLabel}</span>
-          <span className={styles.permissions} aria-hidden>
-            -rwxr-xr-x
-          </span>
-        </div>
-      </div>
-
-      <div className={styles.content}>
-        <a
-          className={styles.posterLink}
-          href={show.url}
-          target="_blank"
-          rel="noreferrer noopener"
-          tabIndex={-1}
-        >
-          {posterUrl ? (
-            <img
-              className={styles.poster}
-              src={posterUrl}
-              alt={`Постер ${show.name}`}
-              loading="lazy"
-              decoding="async"
-            />
+        <div className={styles.meta}>
+          {rating !== null ? (
+            <span className={styles.rating}>★ {rating.toFixed(1)}</span>
           ) : (
-            <div className={styles.posterPlaceholder} aria-hidden>
-              TV
-            </div>
+            <span className={styles.rating}>Рейтинг N/A</span>
           )}
-        </a>
-
-        <div className={styles.body}>
-          <p className={styles.summary}>{summary}</p>
-
-          <ul className={styles.tags}>
-            {premieredYear ? (
-              <li className={styles.tagAmber}>с {premieredYear}</li>
-            ) : null}
+          {show.premiered ? (
+            <span className={styles.premiered}>
+              С {show.premiered.slice(0, 4)}
+            </span>
+          ) : null}
+        </div>
+        {show.genres.length > 0 ? (
+          <ul className={styles.genres}>
             {show.genres.map((genre) => (
-              <li key={genre} className={styles.tag}>
+              <li key={genre} className={styles.genre}>
                 {genre}
               </li>
             ))}
           </ul>
-
-          <p className={styles.meter} aria-hidden>
-            <span className={styles.meterLabel}>rating</span>
-            <span className={styles.meterBar}>{ratingMeter}</span>
-          </p>
-
-          <a
-            className={styles.link}
-            href={show.url}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <span className={styles.arrow} aria-hidden>
-              →
-            </span>{' '}
-            открыть на TVmaze
-          </a>
-        </div>
+        ) : null}
+        <p className={styles.summary}>{summary}</p>
       </div>
     </article>
   );

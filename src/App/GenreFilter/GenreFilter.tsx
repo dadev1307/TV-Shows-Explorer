@@ -1,4 +1,3 @@
-import { PromptLine } from '../components/index.ts';
 import type { GenreFilterProps } from './types.ts';
 import styles from './GenreFilter.module.css';
 
@@ -12,9 +11,8 @@ export const GenreFilter = ({
   }
 
   return (
-    <section className={styles.wrapper}>
-      <PromptLine command="grep --genre" comment={`${genres.length} доступно`} />
-      <p className={styles.title}>&gt; жанры в выдаче</p>
+    <div className={styles.wrapper}>
+      <p className={styles.title}>Жанры в выдаче</p>
       <div className={styles.list} role="group" aria-label="Фильтр по жанрам">
         <button
           type="button"
@@ -42,6 +40,6 @@ export const GenreFilter = ({
           </button>
         ))}
       </div>
-    </section>
+    </div>
   );
 };

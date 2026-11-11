@@ -59,28 +59,7 @@ export const usePresenter = () => {
 
   const hasSearched = query !== '';
 
-  const statusText = (() => {
-    if (isLoading) {
-      return 'searching…';
-    }
-    return errorMessage ? 'error' : 'ready';
-  })();
-
   return {
-    terminal: {
-      statusLabel: isLoading ? 'searching…' : 'online',
-    },
-    neofetch: {
-      rows: [
-        { label: 'Query', value: `"${query.trim()}"` },
-        { label: 'Found', value: `${shows.length} шоу` },
-        { label: 'Showing', value: `${filteredShows.length} шоу` },
-        { label: 'Genre', value: selectedGenre ?? 'все' },
-        { label: 'Page', value: `${page} / ${totalPages}` },
-        { label: 'Status', value: statusText, isHighlighted: true },
-      ],
-    },
-    resultsComment: hasSearched ? `${filteredShows.length} найдено` : undefined,
     searchBar: {
       query,
       onQueryChange: (value: string) => {
@@ -112,6 +91,10 @@ export const usePresenter = () => {
       onRetry: () => {
         runSearch(query);
       },
+    },
+    stats: {
+      filteredCount: filteredShows.length,
+      totalCount: shows.length,
     },
     hasSearched,
     isEmpty:
