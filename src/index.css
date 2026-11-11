@@ -1,0 +1,96 @@
+:root {
+  /* Холст и панели */
+  --bg: #000;
+  --panel: #050805;
+  --panel-lift: #070b07;
+  --line: #143614;
+  --line-strong: #1f4d1f;
+
+  /* Люминофор */
+  --accent: #39ff7a;
+  --accent-dim: #2bbf5c;
+  --accent-faint: #1c7a3c;
+  --accent-bg: rgba(57, 255, 122, 0.08);
+  --accent-text: var(--accent);
+
+  /* Текст */
+  --text: #5f8d68;
+  --text-h: #eafff1;
+
+  /* Единственный второй акцент и служебные цвета */
+  --amber: #ffd24a;
+  --cyan: #5cf6ff;
+  --danger: #ff5f56;
+  --on-accent: #021a0a;
+
+  /* Свечение */
+  --glow: 0 0 8px rgba(57, 255, 122, 0.45), 0 0 24px rgba(57, 255, 122, 0.18);
+  --glow-soft: 0 0 6px rgba(57, 255, 122, 0.3);
+  --glow-amber: 0 0 8px rgba(255, 210, 74, 0.45);
+  --box-glow: 0 0 0 1px rgba(57, 255, 122, 0.08), 0 0 24px rgba(57, 255, 122, 0.12);
+
+  /* Форма */
+  --radius-sm: 3px;
+  --radius-base: 6px;
+  --radius-container: 8px;
+  --transition: 0.18s ease;
+
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Mono',
+    Consolas, monospace;
+  --font-display: var(--font-mono);
+
+  font: 15px/1.6 var(--font-mono);
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+html {
+  /* Резерв под скроллбар — без горизонтального «скачка» при появлении прокрутки */
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+@supports not (scrollbar-gutter: stable) {
+  html {
+    overflow-y: scroll;
+  }
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 100% 0%,
+      rgba(57, 255, 122, 0.08),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 0% 40%,
+      rgba(57, 255, 122, 0.05),
+      transparent 70%
+    ),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+::selection {
+  color: var(--text-h);
+  background: rgba(57, 255, 122, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

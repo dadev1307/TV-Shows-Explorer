@@ -1,0 +1,104 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.name {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text-h);
+  text-shadow: var(--glow);
+  overflow-wrap: anywhere;
+}
+
+.role {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--accent);
+  text-shadow: var(--glow-soft);
+}
+
+.caret {
+  color: var(--text);
+  text-shadow: none;
+}
+
+.intro {
+  max-width: 640px;
+  margin: 0;
+  color: var(--text);
+}
+
+.intro strong {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--accent-dim);
+  list-style: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.primary,
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-base);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition),
+    color var(--transition);
+}
+
+.primary {
+  color: var(--on-accent);
+  background: var(--accent);
+  box-shadow: var(--glow);
+}
+
+.primary:hover {
+  background: var(--text-h);
+  transform: translateY(-1px);
+}
+
+.ghost {
+  color: var(--accent);
+  border: 1px solid var(--line-strong);
+}
+
+.ghost:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-dim);
+  box-shadow: var(--glow-soft);
+}
+
+.primary:focus-visible,
+.ghost:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

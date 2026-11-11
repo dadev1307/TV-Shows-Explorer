@@ -1,0 +1,21 @@
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.path {
+  color: var(--cyan);
+}
+
+.command {
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.comment {
+  color: var(--accent-faint);
+}

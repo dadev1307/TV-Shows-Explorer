@@ -1,0 +1,19 @@
+---
+description: View-компоненты React (.tsx)
+globs: '**/*.tsx'
+alwaysApply: false
+---
+
+# View-компоненты
+
+- Компонент принимает props из `types.ts` того же каталога.
+- Стили только через `*.module.css`, не inline и не глобальные классы в компоненте.
+- Без `fetch`, сложных вычислений и бизнес-ветвлений — выноси в `usePresenter.ts`.
+- Доступность: семантические теги, `aria-*` для интерактива, `alt` у изображений.
+
+```tsx
+// ✅ GOOD
+export const SearchBar = ({ query, onQueryChange }: SearchBarProps) => (
+  <input value={query} onChange={(e) => onQueryChange(e.target.value)} />
+);
+```

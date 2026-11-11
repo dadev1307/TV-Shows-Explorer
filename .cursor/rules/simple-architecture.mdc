@@ -1,0 +1,37 @@
+---
+description: Simple Architecture — структура папок и разделение UI/логики
+alwaysApply: true
+---
+
+# Simple Architecture
+
+## Папка компонента
+
+Каждый компонент живёт в папке `ComponentName/`:
+
+- `ComponentName.tsx` — только отображение
+- `usePresenter.ts` — логика (создавать по необходимости)
+- `types.ts` — типы props и локальные типы
+- `ComponentName.module.css` — стили
+
+## Правила
+
+- В `.tsx` допустим только хук `usePresenter.ts` в качестве js логики; вся-логика — в `usePresenter.ts`.
+- Дочерний компонент, нужный одному родителю, лежит внутри его папки.
+- Общий для нескольких веток компонент выносится на уровень общего родителя в `components/` + `index.ts` для re-export.
+- Не создавай `usePresenter.ts`, `types.ts` или `.module.css`, если они не нужны.
+
+## Пример
+
+```
+App/
+  App.tsx
+  usePresenter.ts
+  SearchBar/
+    SearchBar.tsx
+    types.ts
+  ShowList/
+    ShowList.tsx
+    ShowCard/
+      ShowCard.tsx
+```

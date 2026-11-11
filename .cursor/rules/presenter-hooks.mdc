@@ -1,0 +1,21 @@
+---
+description: Соглашения для usePresenter.ts
+globs: '**/usePresenter.ts'
+alwaysApply: false
+---
+
+# usePresenter
+
+- Хук возвращает объект с данными и колбэками для view-слоя.
+- Побочные эффекты и запросы — здесь; в `.tsx` не дублировать.
+- Производные данные — через `useMemo`, обработчики — через `useCallback`.
+- Не импортировать JSX и не возвращать React-элементы.
+
+```typescript
+// ✅ GOOD
+export const usePresenter = () => {
+  const [page, setPage] = useState(1);
+  const visibleItems = useMemo(() => items.slice(0, page * 3), [items, page]);
+  return { visibleItems, page, setPage };
+};
+```

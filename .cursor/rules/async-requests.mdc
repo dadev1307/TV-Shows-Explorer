@@ -1,0 +1,14 @@
+---
+description: Асинхронные запросы, debounce и useFetch
+globs: 'src/App/**/*.{ts,tsx}'
+alwaysApply: false
+---
+
+# Асинхронные запросы
+
+- Поисковый ввод — debounce (`useDebouncedValue`), не запрос на каждый символ.
+- Пустой запрос не отправлять на API.
+- Использовать `useFetch` с `AbortController`: отменять предыдущий запрос при смене параметров.
+- `AbortError` не считать ошибкой UI.
+- Показывать loading, error с retry и пустую выдачу явными состояниями.
+- Кэш поиска — в `searchCache.ts`, запрос — в `api.ts`.
