@@ -1,63 +1,86 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { searchShows } from './api.ts';
+import { DEFAULT_PAGE_SIZE, searchShows } from './api.ts';
 import type { Show } from './types.ts';
 import { withDebounce } from '../utils/withDebounce.ts';
-
-const PAGE_SIZE = 3;
 
 export const usePresenter = () => {
   const [query, setQuery] = useState('');
 
   const [shows, setShows] = useState<Show[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalFound, setTotalFound] = useState(0);
+  const [filteredCount, setFilteredCount] = useState(0);
 
   const controller = useRef<AbortController | null>(null);
+
   useEffect(() => () => controller.current?.abort(), []);
 
-  const runSearch = useCallback((rawValue: string) => {
-    const text = rawValue.trim();
+  const runSearch = useCallback(
+    (searchQuery: string, searchPage: number, genre: string | null) => {
+      const text = searchQuery.trim();
 
-    controller.current?.abort();
-    setShows([]);
-    setErrorMessage(null);
-    setIsLoading(text !== '');
+      controller.current?.abort();
+      setErrorMessage(null);
+      setIsLoading(text !== '');
 
-    if (!text) {
-      return;
-    }
+      if (!text) {
+        setShows([]);
+        setGenres([]);
+        setTotalPages(1);
+        setTotalFound(0);
+        setFilteredCount(0);
+        return;
+      }
 
-    controller.current = new AbortController();
-    searchShows(text, controller.current.signal)
-      .then(setShows)
-      .catch((err) => {
-        if (controller.current?.signal.aborted) {
-          return;
-        }
-        setErrorMessage(
-          err instanceof Error ? err.message : 'Не удалось загрузить результаты'
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
-
-  const debouncedSearch = useMemo(() => withDebounce(runSearch), [runSearch]);
-
-  const genres = [...new Set(shows.flatMap((show) => show.genres))].sort();
-  const filteredShows = selectedGenre
-    ? shows.filter((show) => show.genres.includes(selectedGenre))
-    : shows;
-  const totalPages = Math.max(1, Math.ceil(filteredShows.length / PAGE_SIZE));
-  const pageShows = filteredShows.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
+      controller.current = new AbortController();
+      searchShows(
+        {
+          query: text,
+          page: searchPage,
+          limit: DEFAULT_PAGE_SIZE,
+          genre,
+        },
+        controller.current.signal
+      )
+        .then((result) => {
+          setShows(result.items);
+          setGenres(result.genres);
+          setPage(result.page);
+          setTotalPages(result.totalPages);
+          setTotalFound(result.totalFound);
+          setFilteredCount(result.totalItems);
+        })
+        .catch((err) => {
+          if (controller.current?.signal.aborted) {
+            return;
+          }
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            return;
+          }
+          setErrorMessage(
+            err instanceof Error
+              ? err.message
+              : 'Не удалось загрузить результаты'
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    []
   );
 
-  const hasSearched = query !== '';
+  const debouncedTextSearch = useMemo(
+    () => withDebounce((value: string) => runSearch(value, 1, null)),
+    [runSearch]
+  );
+
+  const hasSearched = query.trim() !== '';
 
   return {
     searchBar: {
@@ -66,7 +89,7 @@ export const usePresenter = () => {
         setQuery(value);
         setSelectedGenre(null);
         setPage(1);
-        debouncedSearch(value);
+        debouncedTextSearch(value);
       },
       isLoading,
     },
@@ -74,30 +97,34 @@ export const usePresenter = () => {
       genres,
       selectedGenre,
       onGenreSelect: (genre: string | null) => {
-        setSelectedGenre(genre === selectedGenre ? null : genre);
+        const nextGenre = genre === selectedGenre ? null : genre;
+        setSelectedGenre(nextGenre);
         setPage(1);
+        runSearch(query, 1, nextGenre);
       },
     },
     showList: {
-      shows: pageShows,
+      shows,
     },
     pagination: {
       page,
       totalPages,
-      onPageChange: setPage,
+      onPageChange: (nextPage: number) => {
+        setPage(nextPage);
+        runSearch(query, nextPage, selectedGenre);
+      },
     },
     error: {
       message: errorMessage,
       onRetry: () => {
-        runSearch(query);
+        runSearch(query, page, selectedGenre);
       },
     },
     stats: {
-      filteredCount: filteredShows.length,
-      totalCount: shows.length,
+      filteredCount,
+      totalCount: totalFound,
     },
     hasSearched,
-    isEmpty:
-      hasSearched && !isLoading && !errorMessage && filteredShows.length === 0,
+    isEmpty: hasSearched && !isLoading && !errorMessage && filteredCount === 0,
   };
 };

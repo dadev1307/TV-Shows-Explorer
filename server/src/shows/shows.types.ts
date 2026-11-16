@@ -1,0 +1,20 @@
+export type Show = {
+  id: number;
+  name: string;
+  genres: string[];
+  image: { medium: string } | null;
+  rating: { average: number | null };
+  summary: string | null;
+  premiered: string | null;
+  url: string;
+};
+
+export type ShowsPage = {
+  items: Show[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  totalFound: number;
+  genres: string[];
+};

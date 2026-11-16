@@ -8,3 +8,20 @@ export type Show = {
   premiered: string | null;
   url: string;
 };
+
+export type ShowsPage = {
+  items: Show[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  totalFound: number;
+  genres: string[];
+};
+
+export type SearchShowsParams = {
+  query: string;
+  page: number;
+  limit: number;
+  genre: string | null;
+};
